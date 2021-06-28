@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pihole
+  namespace: pihole
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pihole
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: pihole
+        version: v1
+    spec:
+      containers:
+        - name: pihole
+          image: pihole/pihole
+          livenessProbe:
+            httpGet:
+              path: /metrics
+              port: 80
+            initialDelaySeconds: 5
+            failureThreshold: 5
+            timeoutSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: /admin.index.php
+              port: 80
+            initialDelaySeconds: 5
+            failureThreshold: 5
+            timeoutSeconds: 3
+          env:
+            - name: WEBPASSWORD
+              value: "Badmuthafucka0!"
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 53
+              protocol: TCP
+            - containerPort: 53
+              protocol: UDP
+            - containerPort: 67
+              protocol: UDP
+            - containerPort: 80
+              protocol: TCP
+      volumeMounts:
+        - name: pihole-adlists
+          mountPath: /etc/pihole/adlists.list
+          subPath: adlists.list
+        - name: pihole-regex
+          mountPath: /etc/pihole/regex.list
+          subPath: regex.list
+      volumes:
+        - name: pihole-adlists
+          configMap:
+          name: pihole-adlists
+        - name: pihole-regex
+          configMap:
+          name: pihole-regex
