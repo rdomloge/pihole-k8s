@@ -22,19 +22,21 @@ spec:
             httpGet:
               path: /metrics
               port: 80
-            initialDelaySeconds: 5
+            initialDelaySeconds: 60
             failureThreshold: 5
             timeoutSeconds: 3
+            periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /admin.index.php
               port: 80
-            initialDelaySeconds: 5
+            initialDelaySeconds: 60
             failureThreshold: 5
             timeoutSeconds: 3
-          env:
-            - name: WEBPASSWORD
-              value: "Badmuthafucka0!"
+            periodSeconds: 10
+          #env:
+          #  - name: WEBPASSWORD
+          #    value: 'Badmuthafucka0!'
           imagePullPolicy: Always
           ports:
             - containerPort: 53
@@ -45,13 +47,13 @@ spec:
               protocol: UDP
             - containerPort: 80
               protocol: TCP
-      volumeMounts:
-        - name: pihole-adlists
-          mountPath: /etc/pihole/adlists.list
-          subPath: adlists.list
-        - name: pihole-regex
-          mountPath: /etc/pihole/regex.list
-          subPath: regex.list
+          volumeMounts:
+            - name: pihole-adlists
+              mountPath: /etc/pihole/adlists.list
+              subPath: adlists.list
+            - name: pihole-regex
+              mountPath: /etc/pihole/regex.list
+              subPath: regex.list
       volumes:
         - name: pihole-adlists
           configMap:
