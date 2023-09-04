@@ -34,9 +34,6 @@ spec:
             failureThreshold: 5
             timeoutSeconds: 3
             periodSeconds: 10
-          #env:
-          #  - name: WEBPASSWORD
-          #    value: 'Badmuthafucka0!'
           imagePullPolicy: Always
           ports:
             - containerPort: 53
